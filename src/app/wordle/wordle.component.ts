@@ -126,7 +126,7 @@ export class WordleComponent {
     }
   }
 
-  private handleClickKey(key: string) {
+  handleClickKey(key: string) {
     if (this.won) {
       return;
     }
@@ -166,7 +166,8 @@ export class WordleComponent {
     const wordFromCurrentTry = currentTry.letters
       .map((letter) => letter.text)
       .join('')
-      .toUpperCase();
+      .toLowerCase();
+
     if (!WORDS.includes(wordFromCurrentTry)) {
       this.showInfoMessage('Not in Word List');
 
@@ -240,7 +241,7 @@ export class WordleComponent {
     }
 
     if (this.numberOfSubmittedTries === NUMBER_OF_TRIES) {
-      this.showInfoMessage(this.targetWord.toUpperCase(), false);
+      this.showInfoMessage(this.targetWord, false);
     }
   }
 

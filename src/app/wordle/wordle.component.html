@@ -33,6 +33,7 @@
         *ngFor="let key of row"
         [class.enter]="key === 'Enter'"
         [class]="getKeyClass(key)"
+        (click)="handleClickKey(key)"
       >
         <div *ngIf="key !== 'Backspace'; else backspace">
           {{ key }}
@@ -51,4 +52,8 @@
   >
     {{ infoMsg }}
   </div>
+
+  <!-- <div class="share-dialog-container">
+    <div class="share-dialog"></div>
+  </div> -->
 </div>
