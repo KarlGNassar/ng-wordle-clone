@@ -65,7 +65,11 @@ export class WordleComponent {
   private curLetterIndex = 0;
 
   infoMsg = '';
+
   fadeOutInfoMsg = false;
+
+  showShareDialogContainer = false;
+  showShareDialog = false;
 
   private numberOfSubmittedTries = 0;
 
@@ -147,6 +151,37 @@ export class WordleComponent {
     } else if (key === 'Enter') {
       this.checkCurrentTry();
     }
+  }
+
+  handleClickShare() {
+    // 🟩 🟨 ⬛
+    let clipBoardContent = '';
+
+    for (let i = 0; i < this.numberOfSubmittedTries; i++) {
+      for (let j = 0; j < WORD_LENGTH; j++) {
+        const letter = this.tries[i].letters[j];
+
+        switch (letter.state) {
+          case LetterState.FULL_MATCH:
+            clipBoardContent += '🟩';
+            break;
+          case LetterState.PARTIAL_MATCH:
+            clipBoardContent += '🟨';
+            break;
+          case LetterState.WRONG:
+            clipBoardContent += '⬛';
+            break;
+          default:
+            break;
+        }
+      }
+      clipBoardContent += '\n';
+    }
+
+    navigator.clipboard.writeText(clipBoardContent);
+    this.showShareDialogContainer = false;
+    this.showShareDialog = false;
+    this.showInfoMessage('Copied results to clipboard');
   }
 
   private setLetter(letter: string) {
@@ -237,11 +272,13 @@ export class WordleComponent {
         currentLetterElement.classList.add('bounce');
         await this.wait(160);
       }
+      this.showShare();
       return;
     }
 
     if (this.numberOfSubmittedTries === NUMBER_OF_TRIES) {
       this.showInfoMessage(this.targetWord, false);
+      this.showShare();
     }
   }
 
@@ -256,6 +293,15 @@ export class WordleComponent {
         }, 500);
       }, 2000);
     }
+  }
+
+  private showShare() {
+    setTimeout(() => {
+      this.showShareDialogContainer = true;
+      setTimeout(() => {
+        this.showShareDialog = true;
+      });
+    }, 1500);
   }
 
   private async wait(ms: number) {

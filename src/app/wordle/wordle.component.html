@@ -53,7 +53,9 @@
     {{ infoMsg }}
   </div>
 
-  <!-- <div class="share-dialog-container">
-    <div class="share-dialog"></div>
-  </div> -->
+  <div class="share-dialog-container" [class.show]="showShareDialogContainer">
+    <div class="share-dialog" [class.show]="showShareDialog">
+      <button (click)="handleClickShare()">Share</button>
+    </div>
+  </div>
 </div>
