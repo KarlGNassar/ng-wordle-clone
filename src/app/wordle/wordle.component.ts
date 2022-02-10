@@ -60,6 +60,8 @@ export class WordleComponent {
     ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace'],
   ];
 
+  readonly currentLetterStates: { [key: string]: LetterState } = {};
+
   private curLetterIndex = 0;
 
   infoMsg = '';
@@ -102,13 +104,26 @@ export class WordleComponent {
       }
       this.targetWordLetterCounts[letter]++;
     }
-
-    console.log(this.targetWordLetterCounts);
   }
 
   @HostListener('document: keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     this.handleClickKey(event.key);
+  }
+
+  getKeyClass(key: string): string {
+    const state = this.currentLetterStates[key.toLowerCase()];
+
+    switch (state) {
+      case LetterState.FULL_MATCH:
+        return 'match key';
+      case LetterState.PARTIAL_MATCH:
+        return 'partial key';
+      case LetterState.WRONG:
+        return 'wrong key';
+      default:
+        return 'key';
+    }
   }
 
   private handleClickKey(key: string) {
@@ -185,7 +200,6 @@ export class WordleComponent {
       }
       states.push(state);
     }
-    console.log(states);
 
     const tryContainer = this.tryContainer.get(this.numberOfSubmittedTries)
       ?.nativeElement as HTMLElement;
@@ -198,6 +212,17 @@ export class WordleComponent {
       currentTry.letters[i].state = states[i];
       currentLetterElement.classList.remove('fold');
       await this.wait(180);
+    }
+
+    for (let i = 0; i < WORD_LENGTH; i++) {
+      const currentLetter = currentTry.letters[i];
+      const got = currentLetter.text.toLowerCase();
+      const currentStoredState = this.currentLetterStates[got];
+      const targetState = states[i];
+
+      if (currentStoredState == null || targetState > currentStoredState) {
+        this.currentLetterStates[got] = targetState;
+      }
     }
 
     this.numberOfSubmittedTries++;
