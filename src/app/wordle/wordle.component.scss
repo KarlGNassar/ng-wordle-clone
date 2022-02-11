@@ -96,6 +96,10 @@
 
   .keyboard-container {
     margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 
     .row {
       display: flex;
@@ -275,5 +279,12 @@
   }
   100% {
     transform: translateY(0);
+  }
+}
+
+$breakpoint-phone: 500px;
+@media (max-width: $breakpoint-phone) {
+  .key {
+    min-width: 30px !important;
   }
 }
